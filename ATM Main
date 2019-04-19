@@ -1,0 +1,317 @@
+package Money;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.util.*;
+import javax.swing.*;
+
+
+public class guiAtm extends JFrame {
+	a
+	//Global variables
+	//These variables can be called on at any point of the program 
+	static double userBal; //Used to store the user's balance
+	static DecimalFormat df = new DecimalFormat("####0.00");
+	
+	
+	static JTextField text;
+	static JLabel labelMessage;
+	private static JButton buttonSubmit;
+	static JPanel panel = new JPanel();
+	static JTextField ddouble = new JTextField();
+	
+	
+	public guiAtm(){ //This constructor calls the UI method and sets parameters of the program's JFrame
+		
+		 panel.setBackground(Color.PINK);
+			getContentPane().add(panel);
+			
+			
+			
+			JLabel label = new JLabel("Enter Your UserName: ");
+			panel.add(label);
+			
+			text = new JTextField();
+			text.setPreferredSize(new Dimension(150, 30));
+			panel.add(text);
+		
+		
+		mainMenu2(userBal);
+		
+
+		setSize(600, 600);
+		
+		setLocationRelativeTo(null);
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		setResizable(false);
+	
+		
+		
+		
+	}
+
+public static double mainMenu2(double userBal) { // initialize JComboBox(drop-down menu) and is the super method from which all methods in the program derive
+		// Makes it easier to test the design of the GUI before adding values/listeners
+		
+	  
+	  
+	   
+		
+		String[] options = { "Deposit", "Withdraw", "Balance Inquiry", "Exit"	};
+		
+		JComboBox list = new JComboBox(options);	
+		
+		
+		
+		labelMessage = new JLabel("Please enter your name!");
+		panel.add(labelMessage);
+		
+		
+		buttonSubmit = new JButton("Submit");
+		panel.add(buttonSubmit);
+		buttonSubmit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String name = text.getText();
+				if (name.isEmpty()) {
+					labelMessage.setText("Please Try Again");
+				}else {
+					labelMessage.setText("UserName is: " + name.toUpperCase());
+					
+					//Current balance and mainMenu buttons will only appear after the user has successfully entered their name
+					
+					JLabel labelUserBal = new JLabel("Your current balance is: $" + (df.format(userBal)));
+					panel.add(labelUserBal);
+					
+					panel.add(list); ///adds drop down menu
+					
+			
+					list.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+						        JComboBox<String> list = (JComboBox<String>) e.getSource();
+						        String selectedOption = (String) list.getSelectedItem();
+						        
+						        //Menu options
+						 
+						        if (selectedOption.equals("Deposit")) {
+						        	
+						            System.out.println("Good choice!");
+						            
+						           
+						         
+						            depositMethod(userBal);
+						            
+
+						        	
+						            
+						           //This was that cause of the recurring Submit Button problem
+						           // mainMenu2(userBal); 
+						           
+						            
+						              
+						        } else if (selectedOption.equals("Withdraw")) {
+						        	
+						            System.out.println("Nice pick, too!");
+						            
+						            withdrawMethod();
+						            
+						            
+						            
+						        } else if  (selectedOption.equals("Balance Inquiry")) {
+						        	
+						        	
+						        	JOptionPane.showMessageDialog(null, "Here is your current balance: $" + (df.format(userBal))); //Creates a dialog box that displays a printed message 
+						     
+						        	
+						        	
+						        	
+						        	
+						        	
+						        } else {
+						        	
+						        	System.exit(0);
+						        	
+						        	//Create Dialogue box that will ask if you are sure you want to exit. If Yes, then system.exit(0), if No, then kick user back to mainMenu2
+						        	
+						        }
+							}
+						});
+					
+					
+					
+				}
+				
+			}
+		});
+		
+		return userBal;
+		
+		/*
+		 * b1.addActionListener(new ActionListener() { //Utilizing addActionListener
+		 * constructor to make the button perform an action based on the method within
+		 * 
+		 * public void actionPerformed(ActionEvent e) { //The method that will determine
+		 * the action of the button
+		 * 
+		 * depositMethod(userBal);
+		 * 
+		 * //JOptionPane.showMessageDialog(null, "FinalBoss is a Savage"); //Creates a
+		 * dialog box that displays a printed message }
+		 * 
+		 * 
+		 * });
+		 */
+		
+		
+		
+	}
+	
+	public static void main(String[] args) { //Entry point of program
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				new guiAtm().setVisible(true);;
+			}
+		});
+				
+		
+		  
+				 
+}
+
+
+
+
+
+
+
+public static double depositMethod (double userBal) {
+
+
+	labelMessage.setText("Proceed"); //Why is this needed in order for the rest of the method to appear on the panel?
+	
+	JLabel jbl = new JLabel("Enter the amount that you would like to deposit today: ");
+	panel.add(jbl);
+		
+	JTextField ddouble = new JTextField();
+	panel.add(ddouble);
+	
+	ddouble.setPreferredSize(new Dimension(200,24));
+	
+	
+	
+	
+	JButton buttonDeposit = new JButton("Deposit Money");
+	panel.add(buttonDeposit);
+	buttonDeposit.addActionListener(new ActionListener() {
+		
+
+		public void actionPerformed(ActionEvent e) {
+			
+			
+			double depAmt = Double.parseDouble(ddouble.getText());
+			
+			
+			depositMath(depAmt);
+			
+			
+			System.out.println(userBal);
+			
+			
+			JOptionPane.showMessageDialog(null, "Your new balance is: $" + (df.format(userBal)) + ". " + "Would you like to make an additional transaction?");
+		
+			
+		}
+	
+		
+	});
+	
+	
+	
+	
+	
+	return userBal;
+	 
+ 
+}
+
+	
+	
+public static double depositMath(double depAmt) { //new class to hold userBal variable since you cannot pass it to the ActionListener by normal means
+	
+
+	
+	
+	
+	//double depAmt = Double.valueOf(ddouble.getText());
+	
+	System.out.println(userBal);
+	
+	userBal = userBal + depAmt;
+	
+	System.out.println(userBal);
+	
+
+	//JOptionPane.showMessageDialog(null, "Your new balance is: $" + (df.format(userBal)) + ". " + "Would you like to make an additional transaction?");
+
+	
+	return userBal;
+	
+	
+	
+	  
+}
+	
+
+public static void withdrawMethod() {
+	
+	
+	labelMessage.setText("Withdrawl Activated");
+	
+	JLabel jbl = new JLabel("Enter the amount that you would like to withdraw today: ");
+	panel.add(jbl);
+	
+	JTextField wdouble = new JTextField();
+	panel.add(wdouble);
+	
+	wdouble.setPreferredSize(new Dimension(200,24));
+	
+	
+	JButton buttonWithdraw = new JButton("Withdraw Money");
+	panel.add(buttonWithdraw);
+	buttonWithdraw.addActionListener(new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			double withAmt = Double.parseDouble(wdouble.getText());
+			
+			userBal = userBal - withAmt;
+			
+			JOptionPane.showMessageDialog(null, "Your new balance is: $" + (df.format(userBal)) + ". " + "Would you like to make an additional transaction?");
+			
+			return;
+			
+		}
+	});
+	
+	
+	
+	
+	
+}
+
+
+
+
+	
+}
